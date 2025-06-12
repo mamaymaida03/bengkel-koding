@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Pasien;  // Gunakan model Pasien
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Display the registration view for pasien.
      */
     public function create(): View
     {
@@ -23,28 +22,35 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Handle an incoming registration request for pasien.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
+        // Validasi input
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'nama' => ['required', 'string', 'max:255'],
+            'no_ktp' => ['required', 'numeric', 'digits_between:10,25'],  // Validasi No KTP
+            'no_hp' => ['required', 'numeric', 'digits_between:10,15'],  // Validasi No HP
+            'alamat' => ['required', 'string', 'max:255'],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        // Mendapatkan nomor rekam medis terakhir dan menambahkan satu
+        $latestNoRm = Pasien::latest()->first(); // Mengambil pasien terakhir untuk nomor RM
+        $latestNoRm = $latestNoRm ? (int) substr($latestNoRm->no_rm, -3) : 0; // Ekstrak nomor urut terakhir
+        $noRm = date('Ym') . '-' . str_pad($latestNoRm + 1, 3, '0', STR_PAD_LEFT); // Generate No RM
+
+        // Menyimpan data pasien
+        $pasien = Pasien::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'no_ktp' => $request->no_ktp,
+            'no_hp' => $request->no_hp,
+            'no_rm' => $noRm, // Menyimpan no_rm yang telah di-generate
         ]);
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        // Setelah pasien terdaftar, langsung diarahkan ke halaman login-pasien
+        return redirect('/login-pasien')->with('success', 'Pasien berhasil didaftar');
     }
 }
