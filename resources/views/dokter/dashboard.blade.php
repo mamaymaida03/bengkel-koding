@@ -7,9 +7,9 @@
         <li class="nav-item"><a href="{{ route('dokter.memeriksa') }}" class="nav-link"><i
                     class="nav-icon fas fa-book"></i> Memeriksa</a></li>
         <li class="nav-item"><a href="{{ route('dokter.jadwalPeriksa') }}" class="nav-link"><i
-                    class="nav-icon fas fa-book"></i> JadwalPeriksa</a></li>
+                    class="nav-icon fas fa-book"></i> Jadwal Periksa</a></li>
         <li class="nav-item"><a href="{{ route('dokter.historyPeriksa') }}" class="nav-link"><i
-                    class="nav-icon fas fa-book"></i> historyPeriksa</a></li>
+                    class="nav-icon fas fa-book"></i> Riwayat Periksa</a></li>
     </ul>
 @endsection
 
