@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'alamat',
+        'no_hp',
+        'role',
+        'no_ktp',
+        'poli_id',
     ];
 
     /**
@@ -29,6 +35,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
+        'no_rm',
         'password',
         'remember_token',
     ];
@@ -44,5 +51,38 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function pasiens(): HasMany
+    {
+        return $this->hasMany(Periksa::class, 'id_pasien');
+    }
+    public function dokters(): HasMany
+    {
+        return $this->hasMany(Periksa::class, 'id_dokter');
+    }
+
+    // ONE TO MANY
+    public function poli()
+    {
+        return $this->belongsTo(Poli::class);
+    }
+
+    // GNEERATED FOORMATING NO REKAM MEDIS
+    public static function generateNoRmFromId($id)
+    {
+        $now = now();
+        $prefix = $now->format('Ym');
+        return $prefix . '-' . $id;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($user) {
+            $user->no_rm = self::generateNoRmFromId($user->id);
+            $user->save();
+        });
     }
 }
