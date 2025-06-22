@@ -27,6 +27,11 @@
     <link rel="stylesheet" href="{{asset('lte/plugins/daterangepicker/daterangepicker.css')}}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{asset('lte/plugins/summernote/summernote-bs4.min.css')}}">
+    <!-- Tambahan untuk Select2 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css"
+        rel="stylesheet"
+    />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -301,5 +306,9 @@
 <script src="{{asset('lte/dist/js/demo.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{asset('lte/dist/js/pages/dashboard.js')}}"></script>
+<!-- Tambahan untuk Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+{{-- PENTING: agar script dari halaman bisa jalan --}}
+@yield('scripts')
 </body>
 </html>

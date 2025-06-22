@@ -121,6 +121,18 @@
                                     @enderror
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="poli_id">Poli</label>
+                                    <select name="poli_id" class="form-control" required>
+                                        <option value="">-- Pilih Poli --</option>
+                                        @foreach ($polis as $poli)
+                                            <option value="{{ $poli->id }}" {{ old('poli_id', $user->poli_id) == $poli->id ? 'selected' : '' }}>
+                                                {{ $poli->nama_poli }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                                 <hr>
                                 <h5 class="text-primary"><i class="fas fa-lock"></i> Ubah Password (Opsional)</h5>
                                 <div class="row">

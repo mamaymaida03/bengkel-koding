@@ -98,7 +98,7 @@
                                                                 @endforeach
                                                             </ul>
                                                         @else
-                                                            <span class="text-muted">Tidak Ada</span>
+                                                            <span class="text-muted">Tidak Ada Obat</span>
                                                         @endif
                                                     </td>
                                                     <td>

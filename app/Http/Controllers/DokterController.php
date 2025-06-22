@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\Poli;
 
 class DokterController extends Controller
 {
@@ -164,7 +165,6 @@ class DokterController extends Controller
      * */
     public function getProfile($id)
     {
-
         $user = User::findOrFail($id);
 
         // Check if the logged-in user is the same as the one being edited
@@ -172,7 +172,9 @@ class DokterController extends Controller
             return redirect()->route('dokter.dashboard')->with('error', 'Unauthorized access.');
         }
 
-        return view('dokter.dashboardEdit', compact('user'));
+        $polis = \App\Models\Poli::all(); 
+
+        return view('dokter.dashboardEdit', compact('user', 'polis')); 
     }
 
     public function editProfile(Request $request)
@@ -184,20 +186,22 @@ class DokterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255'],
             'alamat' => ['nullable', 'string', 'max:255'],
             'no_hp' => ['nullable', 'string', 'max:20'],
+            'poli_id' => ['required', 'exists:poli,id'], 
             'current_password' => ['nullable', 'required_with:password', 'string'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // Update basic information
+        // Update data user
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->alamat = $validated['alamat'];
         $user->no_hp = $validated['no_hp'];
+        $user->poli_id = $validated['poli_id']; 
 
-        // Update password if provided
+        // Ubah password jika dimasukkan
         if ($request->filled('password')) {
             if (!Hash::check($request->current_password, $user->password)) {
-                return back()->withErrors(['current_password' => 'The provided password does not match your current password.']);
+                return back()->withErrors(['current_password' => 'Password saat ini tidak cocok.']);
             }
 
             $user->password = bcrypt($validated['password']);
@@ -205,9 +209,8 @@ class DokterController extends Controller
 
         $user->save();
 
-        return redirect()->route('dokter.dashboard')->with('success', 'Profile updated successfully!');
+        return redirect()->route('dokter.dashboard')->with('success', 'Profil berhasil diperbarui!');
     }
-
 
     /*JADWAL
      * */

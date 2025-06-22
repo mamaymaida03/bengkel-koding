@@ -23,7 +23,7 @@
         <li class="nav-item">
             <a href="{{ route('dokter.historyPeriksa') }}" class="nav-link">
                 <i class="nav-icon fas fa-history"></i>
-                <p>History Periksa</p>
+                <p>Riwayat Periksa</p>
             </a>
         </li>
     </ul>
@@ -265,76 +265,46 @@
 @endsection
 
 @section('scripts')
-    <!-- Select2 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const biayaKonsultasi = 150000;
 
-    <script>
-        $(document).ready(function() {
-            // Initialize Select2
-            $('.select2').select2({
-                theme: 'bootstrap4',
-                width: '100%'
+        function hitungBiaya() {
+            let totalObat = 0;
+
+            let selectedOptions = $('#obat').find('option:selected');
+            selectedOptions.each(function() {
+                totalObat += parseInt($(this).data('harga')) || 0;
             });
 
-            // Calculate total cost when medicines are selected
-            $('#obat').on('change', function() {
-                let totalObat = 0;
-                let selectedOptions = $(this).find('option:selected');
+            let totalBiaya = biayaKonsultasi + totalObat;
 
-                selectedOptions.each(function() {
-                    totalObat += parseInt($(this).data('harga')) || 0;
-                });
+            $('#total-obat').text('Rp ' + totalObat.toLocaleString('id-ID'));
+            $('#total-biaya').text('Rp ' + totalBiaya.toLocaleString('id-ID'));
 
-                let biayaKonsultasi = 150000;
-                let totalBiaya = biayaKonsultasi + totalObat;
-
-                $('#total-obat').text('Rp ' + totalObat.toLocaleString('id-ID'));
-                $('#total-biaya').text('Rp ' + totalBiaya.toLocaleString('id-ID'));
-
-                // Enable/disable submit button based on selection
-                if (selectedOptions.length > 0) {
-                    $('#submit-btn').prop('disabled', false);
-                } else {
-                    $('#submit-btn').prop('disabled', true);
-                }
-            });
-
-            // Auto hide alerts after 5 seconds
-            setTimeout(function() {
-                $('.alert').fadeOut('slow');
-            }, 5000);
-
-            // Form validation
-            $('form').on('submit', function(e) {
-                let selectedObat = $('#obat').val();
-                if (!selectedObat || selectedObat.length === 0) {
-                    e.preventDefault();
-                    alert('Harap pilih minimal satu obat untuk pasien.');
-                    return false;
-                }
-            });
-
-            // Initialize the form
-            $('#obat').trigger('change');
-        });
-    </script>
-
-    <style>
-        .select2-container--bootstrap4 .select2-selection {
-            height: calc(2.25rem + 2px) !important;
+            // Enable/disable submit
+            $('#submit-btn').prop('disabled', selectedOptions.length === 0);
         }
 
-        .form-control-static {
-            padding-top: 0.375rem;
-            padding-bottom: 0.375rem;
-            margin-bottom: 0;
-            border: 0;
-        }
+        // Event listener untuk select biasa
+        $('#obat').on('change', hitungBiaya);
 
-        .badge-lg {
-            font-size: 1.1em;
-            padding: 0.5rem 1rem;
-        }
-    </style>
+        // Hitung awal
+        hitungBiaya();
+    });
+</script>
+
+<style>
+    .form-control-static {
+        padding-top: 0.375rem;
+        padding-bottom: 0.375rem;
+        margin-bottom: 0;
+        border: 0;
+    }
+
+    .badge-lg {
+        font-size: 1.1em;
+        padding: 0.5rem 1rem;
+    }
+</style>
 @endsection

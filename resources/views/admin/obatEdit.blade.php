@@ -6,13 +6,13 @@
                     class="nav-icon fas fa-tachometer-alt"></i> Dashboard</a></li>
         <li class="nav-item"><a href="{{ route('admin.obatMaster') }}" class="nav-link"> <i
                     class="nav-icon fas fa-th"></i>
-                ObatMaster</a></li>
+                Obat</a></li>
         <li class="nav-item"><a href="{{ route('admin.dokterMaster') }}" class="nav-link"><i
-                    class="nav-icon fas fa-book"></i> DokterMaster</a></li>
+                    class="nav-icon fas fa-book"></i> Dokter</a></li>
         <li class="nav-item"><a href="{{ route('admin.pasienMaster') }}" class="nav-link"><i
-                    class="nav-icon fas fa-book"></i> PasienMaster</a></li>
+                    class="nav-icon fas fa-book"></i> Pasien</a></li>
         <li class="nav-item"><a href="{{ route('admin.poliMaster') }}" class="nav-link"><i
-                    class="nav-icon fas fa-user-injured"></i> PoliMaster</a></li>
+                    class="nav-icon fas fa-user-injured"></i> Poli</a></li>
     </ul>
 @endsection
 
