@@ -466,11 +466,53 @@ class DokterController extends Controller
             })
             ->get();
 
-//        dd($periksas);
+        // dd($periksas);
 
         return view('dokter.historyPeriksa', compact('periksas'));
     }
 
+    // method untuk edit pemeriksaan yang sudah dilakukan
+    public function editHasilPeriksa($id)
+    {
+        $periksa = Periksa::with('obat')->findOrFail($id);
+
+        if ($periksa->janjiPeriksa->jadwalPeriksa->id_dokter !== auth()->user()->id) {
+            return redirect()
+                ->route('dokter.historyPeriksa')
+                ->with('error', 'Anda tidak diizinkan mengedit pemeriksaan ini.');
+        }
+
+        $allObat = Obat::all();
+
+        return view('dokter.historyPeriksaEdit', compact('periksa','allObat'));
+    }
+
+    public function updateHasilPeriksa(Request $request, $id)
+    {
+        $periksa = Periksa::with('janjiPeriksa.jadwalPeriksa')->findOrFail($id);
+
+        if ($periksa->janjiPeriksa->jadwalPeriksa->id_dokter !== auth()->user()->id) {
+            return redirect()
+                ->route('dokter.historyPeriksa')
+                ->with('error', 'Anda tidak diizinkan memperbarui pemeriksaan ini.');
+        }
+
+        $request->validate([
+            'catatan' => 'nullable|string',
+            'biaya_periksa' => 'required|numeric',
+            'obat' => 'array',
+        ]);
+
+        $periksa->catatan = $request->catatan;
+        $periksa->biaya_periksa = $request->biaya_periksa;
+        $periksa->save();
+
+        $periksa->obat()->sync($request->obat ?? []);
+
+        return redirect()
+            ->route('dokter.historyPeriksa')
+            ->with('success', 'Data pemeriksaan berhasil diperbarui!');
+    }
 
 }
 

@@ -69,6 +69,7 @@
                                                 <th>Catatan Dokter</th>
                                                 <th style="width: 20%;">Obat</th>
                                                 <th style="width: 15%;">Biaya Total</th>
+                                                <th style="width: 10%;" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -105,6 +106,11 @@
                                                         <strong class="text-success">
                                                             Rp {{ number_format($periksa->biaya_periksa, 0, ',', '.') }}
                                                         </strong>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="{{ route('dokter.historyPeriksa.edit', $periksa->id) }}" class="btn btn-sm btn-warning">
+                                                            <i class="fas fa-edit"></i> Edit
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             @endforeach

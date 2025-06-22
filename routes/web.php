@@ -102,5 +102,8 @@ Route::middleware(['auth'])->group(function () {
         // HITORY PEMERIKSAAN OLEH DOKTER
         Route::get('/history-periksa', [DokterController::class, 'showHitoryPemeriksaan'])->name('historyPeriksa');
 
+        // ROUTE UNTUK EDIT DAN UPDATE RIWAYAT PERIKSA
+        Route::get('/history-periksa/{id}/edit', [DokterController::class, 'editHasilPeriksa'])->name('historyPeriksa.edit');
+        Route::put('/history-periksa/{id}', [DokterController::class, 'updateHasilPeriksa'])->name('historyPeriksa.update');
     });
 });
