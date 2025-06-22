@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,14 +9,8 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -27,24 +20,15 @@ class User extends Authenticatable
         'role',
         'no_ktp',
         'poli_id',
+        'no_rm', // agar bisa diisi manual saat seeding
+        'email_verified_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'no_rm',
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -57,32 +41,47 @@ class User extends Authenticatable
     {
         return $this->hasMany(Periksa::class, 'id_pasien');
     }
+
     public function dokters(): HasMany
     {
         return $this->hasMany(Periksa::class, 'id_dokter');
     }
 
-    // ONE TO MANY
     public function poli()
     {
         return $this->belongsTo(Poli::class);
     }
 
-    // GNEERATED FOORMATING NO REKAM MEDIS
-    public static function generateNoRmFromId($id)
+    // Generate no_rm untuk pasien berdasarkan jumlah pasien yang sudah ada
+    public static function generateNoRmPasien(): string
     {
-        $now = now();
-        $prefix = $now->format('Ym');
-        return $prefix . '-' . $id;
+        $prefix = now()->format('Ym');
+
+        // Hitung hanya pasien yang sudah punya no_rm di bulan & tahun ini
+        $jumlahPasienBulanIni = self::where('role', 'pasien')
+            ->where('no_rm', 'like', $prefix . '-%')
+            ->count() + 1;
+
+        return $prefix . '-' . str_pad($jumlahPasienBulanIni, 3, '0', STR_PAD_LEFT);
     }
 
     protected static function boot()
     {
         parent::boot();
 
+        // Isi email_verified_at jika belum ada
+        static::creating(function ($user) {
+            if (is_null($user->email_verified_at)) {
+                $user->email_verified_at = now();
+            }
+        });
+
+        // Generate no_rm hanya untuk pasien
         static::created(function ($user) {
-            $user->no_rm = self::generateNoRmFromId($user->id);
-            $user->save();
+            if ($user->role === 'pasien' && empty($user->no_rm)) {
+                $user->no_rm = self::generateNoRmPasien();
+                $user->save();
+            }
         });
     }
 }

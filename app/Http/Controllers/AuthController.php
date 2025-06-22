@@ -57,7 +57,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'alamat' => 'nullable|string',
             'no_hp' => 'nullable|string',
-            'no_ktp' => 'nullable|string|unique:users',
+            'no_ktp' => 'required|string|unique:users,no_ktp',
             // Validasi lainnya
         ]);
 

@@ -32,6 +32,24 @@ class PoliSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nama_poli' => 'Poli Kandungan',
+                'keterangan' => 'Kesehatan ibu dan kandungan',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_poli' => 'Poli Saraf',
+                'keterangan' => 'Gangguan sistem saraf',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_poli' => 'Poli Jantung',
+                'keterangan' => 'Pemeriksaan jantung',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }
